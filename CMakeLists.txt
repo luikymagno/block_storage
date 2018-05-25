@@ -5,8 +5,8 @@ set (CMAKE_CXX_STANDARD 11)
 project(BlockStorage)
 
 set(SOURCES
-    src/storage_functions.cpp
     src/main.cpp
+    src/storage_functions.cpp
 )
 
 add_executable(BlockStorage ${SOURCES})

@@ -23,6 +23,7 @@ const std::string kStorageDeviceFilePath = "/dev/sda";
 
 const int kBytesInGigaByte = 1000000000;
 const int kDefautFileFlags = O_CREAT| O_RDWR | O_SYNC | O_DIRECT;
+const int kLinuxMaxRWCount = 2147479552;
 
 template <class T> class BlockArray;
 
@@ -84,27 +85,26 @@ public:
     }
 
     BlkStgStatus ReadBlocks(uint32_t offset_block,
-                            BlockArray<T> &request) const {
-        size_t read_size = request.size()*sizeof(T);
+                            BlockArray<T> &array) const {
+        size_t read_size = array.size()*sizeof(T);
         size_t offset_bytes = offset_block*sizeof(T);
 
-        size_t num_reads = pread(*fd_raii_, request.GetRawData(),
+        size_t num_reads = pread(*fd_raii_, array.GetRawData(),
                                  read_size, offset_bytes);
 
         if (num_reads != read_size) {
             return kFileError;
         }
 
-
         return kNoError;
     }
 
     BlkStgStatus WriteBlocks(uint32_t offset_block,
-                             const BlockArray<T> &request) {
-        size_t write_size = request.size()*sizeof(T);
+                             const BlockArray<T> &array) {
+        size_t write_size = array.size()*sizeof(T);
         size_t offset_bytes = offset_block*sizeof(T);
 
-        size_t num_writes = pwrite(*fd_raii_, request.GetRawData(),
+        size_t num_writes = pwrite(*fd_raii_, array.GetRawData(),
                                    write_size, offset_bytes);
 
         if (num_writes != write_size) {

@@ -4,21 +4,15 @@
 #include <memory>
 #include <string>
 
-enum BlkStgStatus {kOutOfRangeError, kFileError, kNoError};
+enum BlkStgStatus {kFileError, kAllocError, kNoError};
 
 namespace storage_functions {
 
-std::shared_ptr<int> MakeFileRAII(const std::string &path);
+std::shared_ptr<int> MakeFileRAII(const std::string &path, uint32_t flags);
 
 bool FileExists(const std::string &path);
 
 BlkStgStatus RemoveFile(const std::string &path);
-
-std::shared_ptr<int> MakeFileRAIILinux(const std::string &path);
-
-bool FileExistsLinux(const std::string &path);
-
-BlkStgStatus RemoveFileLinux(const std::string &path);
 }
 
 

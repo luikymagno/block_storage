@@ -1,20 +1,43 @@
 #include <iostream>
+#include <algorithm>
 
-#include "make_block_storage.h"
+#include "block_storage.h"
 
 using namespace std;
 
-struct Page {
-    char data[4096];
+struct Register {
+    int idade;
+    char nome[30];
+    char cpf[10];
+};
+
+struct Block {
+    Register data[93];
+    char reserved[4];
 };
 
 int main() {
-    auto storage = MakeBlockStorage<Page>("/home/davi/storage_file");
-    uint32_t block_size;
-    storage->GetBlockSize(block_size);
-    cout << "Block Size: " << block_size << endl;
-    if (storage->ClearAndAlloc(1) == kFileError) {
-        cout << "File Exists!" << endl;
+    cout << "Register Size: " << sizeof(Register) << endl;
+
+    BlockStorage<Block> storage("/home/davi/storage_file");
+
+
+    uint32_t blksz = 0;
+    storage.GetBlockSize(blksz);
+
+    cout << "Block Size: " << blksz << endl;
+
+
+    BlockArray<Block> blocks(blksz, 1000000);
+
+
+    if (storage.WriteBlocks(0, blocks) != kNoError) {
+        cout << "write error!" << endl;
     }
+
+    if (storage.ReadBlocks(0, blocks) != kNoError) {
+        cout << "read error!" << endl;
+    }
+
     return 0;
 }
