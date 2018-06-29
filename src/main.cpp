@@ -1,54 +1,62 @@
 #include <iostream>
 #include <algorithm>
-#include <random>
-#include <chrono>
 #include <string>
 
 #include "block_storage.h"
 
 using namespace std;
 
+const std::string kStorageFilePath = "./storage_file";
+
 struct Register {
-    int idade;
-    char nome[30];
-    char cpf[10];
+    int age;
+    char name[30];
+    char ssn[10];
 };
 
 struct MyBlockType {
-    Register data[93];
+    Register registers[93];
     char reserved[4];
 };
 
-Register MakeRandomRegister() {
-    Register reg;
-    std::default_random_engine generator;
-    std::uniform_int_distribution<int> age_rand(1,100);
-    reg.idade = age_rand(generator);
-}
+/**
+ * @brief Simple example showing block_storage usage.
+ */
+int main(int argc, char *argv[]) {
 
-int main() {
 
-    BlockStorage<MyBlockType> storage("/home/davi/storage_file");
+    try {
+        BlockStorage<MyBlockType> storage(kStorageFilePath);
 
-    size_t blksz = 0;
-    storage.GetBlockSize(blksz);
+        Block<MyBlockType> block;
 
-    cout << "Block Size: " << blksz << endl;
+        int num_operations = std::stoi(argv[1]);
+        num_operations++;
 
-    Block<MyBlockType> block(blksz);
+        storage.ClearFile();
 
-    for(int i=0; i<1000; i++) {
-        if (storage.WriteBlock(i, block) != kNoError) {
-            cout << "write error!" << endl;
-            break;
+        for (int i = 1; i < num_operations; i++) {
+            if (storage.WriteBlock(i, block) != blkstorage::kNoError) {
+                cout << "There was an error during WriteBlock()." << endl;
+                break;
+            }
+
+            if (storage.ReadBlock(i, block) != blkstorage::kNoError) {
+                cout << "There was an error during ReadBlock()." << endl;
+                break;
+            }
+
+            cout << "Block " << i << " was written/read successfully!"
+                 << endl;
         }
-
-//        if (storage.ReadBlock(0, block) != kNoError) {
-//            cout << "read error!" << endl;
-//            break;
-//        }
-
-        cout << "i = " << i << endl;
     }
+    catch (std::logic_error &e) {
+        cout << "Invalid block size." << endl;
+    }
+
+    catch (std::runtime_error &e) {
+        cout << "File error." << endl;
+    }
+
     return 0;
 }
