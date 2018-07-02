@@ -6,6 +6,7 @@ project(block_storage)
 
 set(SOURCES
     src/main.cpp
+    src/workload_generator.cpp
 )
 
 add_executable(block_storage ${SOURCES})

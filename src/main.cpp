@@ -1,62 +1,85 @@
-#include <iostream>
 #include <algorithm>
+#include <cmath>
+#include <iostream>
+#include <random>
 #include <string>
+#include <set>
+#include <vector>
 
-#include "block_storage.h"
+#include "workload_generator.h"
 
-using namespace std;
+//#include "block_storage.h"
 
-const std::string kStorageFilePath = "./storage_file";
+//using namespace std;
 
-struct Register {
-    int age;
-    char name[30];
-    char ssn[10];
-};
+//const std::string kStorageFilePath = "./storage_file";
 
-struct MyBlockType {
-    Register registers[93];
-    char reserved[4];
-};
+//struct Register {
+//    int age;
+//    char name[30];
+//    char ssn[10];
+//};
 
-/**
- * @brief Simple example showing block_storage usage.
- */
+//struct MyBlockType {
+//    Register registers[93];
+//    char reserved[4];
+//};
+
+///**
+// * @brief Simple example showing block_storage usage.
+// */
+//int main(int argc, char *argv[]) {
+
+
+//    try {
+//        BlockStorage<MyBlockType> storage(kStorageFilePath);
+
+//        Block<MyBlockType> block;
+
+//        int num_operations = std::stoi(argv[1]);
+//        num_operations++;
+
+//        storage.ClearFile();
+
+//        for (int i = 1; i < num_operations; i++) {
+//            if (storage.WriteBlock(i, block) != blkstorage::kNoError) {
+//                cout << "There was an error during WriteBlock()." << endl;
+//                break;
+//            }
+
+//            if (storage.ReadBlock(i, block) != blkstorage::kNoError) {
+//                cout << "There was an error during ReadBlock()." << endl;
+//                break;
+//            }
+
+//            cout << "Block " << i << " was written/read successfully!"
+//                 << endl;
+//        }
+//    }
+//    catch (std::logic_error &e) {
+//        cout << "Invalid block size." << endl;
+//    }
+
+//    catch (std::runtime_error &e) {
+//        cout << "File error." << endl;
+//    }
+
+//    return 0;
+//}
+
 int main(int argc, char *argv[]) {
 
+    WorkloadGenerator wg;
 
-    try {
-        BlockStorage<MyBlockType> storage(kStorageFilePath);
+    auto txs= wg.Generate(300000,0.005,45,5);
 
-        Block<MyBlockType> block;
-
-        int num_operations = std::stoi(argv[1]);
-        num_operations++;
-
-        storage.ClearFile();
-
-        for (int i = 1; i < num_operations; i++) {
-            if (storage.WriteBlock(i, block) != blkstorage::kNoError) {
-                cout << "There was an error during WriteBlock()." << endl;
-                break;
-            }
-
-            if (storage.ReadBlock(i, block) != blkstorage::kNoError) {
-                cout << "There was an error during ReadBlock()." << endl;
-                break;
-            }
-
-            cout << "Block " << i << " was written/read successfully!"
-                 << endl;
+    for (auto& tx:txs) {
+        for (auto& obj:tx) {
+            std::   cout << obj << " ";
         }
-    }
-    catch (std::logic_error &e) {
-        cout << "Invalid block size." << endl;
-    }
-
-    catch (std::runtime_error &e) {
-        cout << "File error." << endl;
+        std::cout << std::endl;
     }
 
     return 0;
 }
+
