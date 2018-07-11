@@ -7,6 +7,7 @@ project(block_storage)
 set(SOURCES
     src/main.cpp
     src/workload_generator.cpp
+    src/disk_log.cpp
 )
 
 add_executable(block_storage ${SOURCES})
