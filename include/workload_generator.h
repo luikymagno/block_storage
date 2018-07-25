@@ -9,9 +9,9 @@ class WorkloadGenerator
 public:
     WorkloadGenerator() {}
     virtual ~WorkloadGenerator() {}
-    std::vector<std::set<int>> Generate(int num_entries, double skew_factor,
+    std::vector<std::set<int> > Generate(int num_entries, double skew_factor,
                                         int skew_window, int tx_size);
-private:
+
 
 };
 

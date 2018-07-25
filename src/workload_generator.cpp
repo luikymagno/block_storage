@@ -5,7 +5,7 @@
 #include <iostream>
 #include <random>
 
-std::vector<std::set<int> > WorkloadGenerator::Generate(int num_entries,
+std::vector<std::set<int>> WorkloadGenerator::Generate(int num_entries,
                                                         double skew_factor,
                                                         int skew_window,
                                                         int tx_size) {

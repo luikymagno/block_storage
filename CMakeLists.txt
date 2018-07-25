@@ -8,6 +8,8 @@ set(SOURCES
     src/main.cpp
     src/workload_generator.cpp
     src/disk_log.cpp
+    src/blkstorage.cpp
+    src/data_base_disk.cpp
 )
 
 add_executable(block_storage ${SOURCES})

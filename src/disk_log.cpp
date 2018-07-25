@@ -1,17 +1,40 @@
 #include "disk_log.h"
 
-DiskLog::DiskLog() : i(0) {
+#include <iostream>
+#include <vector>
 
+DiskLog::DiskLog(std::string path_) : offset(0), path(path_), storage(path_)
+{
+    storage.ClearFile();
 }
 
-void DiskLog::addLogEntry(LogEntry logE) {
-    logB.entries[i++] = logE;
-    if(i==200) {
-        write();
-        i=0;
-    }
+int DiskLog::getOffSet()
+{
+    return offset;
 }
 
-void DiskLog::write() {
-
+Block<LogBlock> DiskLog::read(int offset_)
+{
+    storage.ReadBlock(offset_,block);
+    return block;
 }
+
+void DiskLog::write(const LogBlock &logB)
+{
+        block.SetData(logB);
+        if (storage.WriteBlock(offset++, block) != blkstorage::kNoError)
+        {
+            std::cout << "There was an error during WriteBlock()." << std::endl;
+        }
+}
+
+
+
+
+
+
+
+
+
+
+

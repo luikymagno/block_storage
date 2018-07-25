@@ -19,24 +19,11 @@ const int kDefautFileFlags = O_RDWR | O_SYNC | O_DIRECT | O_CREAT;
 
 enum BlkStgStatus {kFileError, kAllocError, kNoError};
 
-std::shared_ptr<int> MakeFileRAII(const std::string &path, uint32_t flags) {
-    int fd = open(path.c_str(), flags, S_IRWXU);
-    if (fd < 0) {
-        return nullptr;
-    }
-    return std::shared_ptr<int>(new int(fd), [](int *fd) {
-        close(*fd);
-        delete fd;
-    });
-}
+std::shared_ptr<int> MakeFileRAII(const std::string &path, uint32_t flags);
 
-bool FileExists(const std::string &path) {
-    return access(path.c_str(), F_OK ) != -1;
-}
+bool FileExists(const std::string &path);
 
-BlkStgStatus RemoveFile(const std::string &path) {
-    return (remove(path.c_str()) != -1) ? kNoError : kFileError;
-}
+BlkStgStatus RemoveFile(const std::string &path);
 
 }
 
