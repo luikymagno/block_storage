@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <cmath>
+#include <chrono>
 #include <iostream>
 #include <random>
 #include <string>
@@ -10,51 +11,19 @@
 #include "block_storage.h"
 #include "blkstorage.h"
 #include "data_base_disk.h"
-#include "disk_log.h"
-#include "workload_generator.h"
+#include "data_base_pmem.h"
+#include "test.h"
+
+constexpr size_t kPracticalPoolSize = 1800000000;
+constexpr size_t kNumTx = kPracticalPoolSize/sizeof(disk_pmem::LogEntry);
 
 using namespace std;
 
-const string kStorageFilePath = "/home/luiky/Documents/log";
-
-int main(int argc, char *argv[])
-{
-
-    WorkloadGenerator wg;
-    map<int, double> database;
-    DataBaseDisk d(kStorageFilePath);
-
-    auto txs= wg.Generate(78*2,0.005,5,3);
-    cout << endl << "-------------------------IDs E OBJETOS-------------------------" << endl;
-    for(auto& tx:txs)
-    {
-        for (auto& obj:tx)
-        {
-            cout << "ID: " << obj << " OBJ: " << ++database[obj] << '\t';
-        }
-        cout << endl;
-        d.executeTransaction(tx);
-    }
-    cout << endl << "------------------------COMPARAÇÃO------------------------" << endl;
-
-    map<int,double> before = d.getDataBase();
-
-    d.recover();
-
-    map<int,double> after = d.getDataBase();
-
-    for_each(after.begin(),after.end(),[&before](pair<int,double> p)
-        {
-            cout << (before[p.first] == p.second) << endl;
-        });
+int main(int argc, char *argv[]) {
+    Test test;
+    test.performTransactions("/home/luiky/Documents/log", false, kNumTx);
     return 0;
 }
-
-
-
-
-
-
 
 
 

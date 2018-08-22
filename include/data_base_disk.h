@@ -2,6 +2,7 @@
 #define DATA_BASE_DISK_H
 
 #include "data_base.h"
+#include "disk_log.h"
 
 #include <memory>
 #include <string>
@@ -12,13 +13,13 @@ private:
     std::map<int,double> dataBase;
     DiskLog diskLog;
     int indexBlock;
-    LogBlock logB;
+    disk_pmem::LogBlock logB;
     int tx_id;
 
 public:
 
     DataBaseDisk(std::string path);
-    void executeTransaction(const std::set<int> &tx);
+    void executeTransaction(const std::set<double> &tx);
     std::map<int,double> getDataBase();
     void recover();
 };
